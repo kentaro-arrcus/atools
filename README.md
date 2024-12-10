@@ -1,2 +1,3 @@
-# atools
-(public) store and test convenient tools and scripts
+# pubtools
+
+*public* repo to store and play with convenient tools and scripts.
