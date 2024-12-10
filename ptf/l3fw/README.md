@@ -13,19 +13,19 @@ Test items:
 
 ## Topology
 
-- Create netns `ptf10` and `ptf20` as virtual host.
+- Create netns `ptf0` as virtual host.
 - Use host (netns:default) as DUT.
 
 ```topo
-+----------+ +----------+
-|  ptf10   | |  ptf20   |
-|          | |          |
-| (veth10) | | (veth20) |
-+-----|----+ +-----|----+
-      |            |
-  (veth11)     (veth21)
++-------------------+
+|       ptf0        |
+|                   |
+| (veth10) (veth20) |
++-----|--------|----+
+      |        |
+  (veth11) (veth21)
 
-  host (netns: default)
+host (netns: default)
 ```
 
 - veth10: 10.0.10.10/24 (02:03:04:05:06:10)
@@ -41,3 +41,13 @@ $ sudo topo.sh -c
 $ sudo topo.sh -d
 ```
 
+## Run Test
+
+```
+$ ./run-ptf-test.sh
+
+
+sudo ip link add name veth100 type veth peer name veth101
+sudo ip link set veth100 up
+sudo ip link set veth101 up
+```

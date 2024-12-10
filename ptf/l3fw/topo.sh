@@ -20,26 +20,23 @@ silent () {
 }
 
 create_network () {
-  run ip netns add ptf10
-  run ip netns add ptf20
+  run ip netns add ptf0
   run ip link add name veth10 type veth peer name veth11
   run ip link add name veth20 type veth peer name veth21
-  run ip link set veth10 netns ptf10
-  run ip link set veth20 netns ptf20
+  run ip link set veth10 netns ptf0
+  run ip link set veth20 netns ptf0
 
-  run ip netns exec ptf10 ip link set dev lo up
-  run ip netns exec ptf10 ethtool --offload veth10 rx off tx off
-  run ip netns exec ptf10 ip addr add 10.0.10.10/24 dev veth10
-  run ip netns exec ptf10 ip link set veth10 address 02:03:04:05:06:10
-  run ip netns exec ptf10 ip link set dev veth10 up
-  run ip netns exec ptf10 ip route add default via 10.0.10.1
+  run ip netns exec ptf0 ip link set dev lo up
+  run ip netns exec ptf0 ethtool --offload veth10 rx off tx off
+  run ip netns exec ptf0 ip addr add 10.0.10.10/24 dev veth10
+  run ip netns exec ptf0 ip link set veth10 address 02:03:04:05:06:10
+  run ip netns exec ptf0 ip link set dev veth10 up
 
-  run ip netns exec ptf20 ip link set dev lo up
-  run ip netns exec ptf20 ethtool --offload veth20 rx off tx off
-  run ip netns exec ptf20 ip addr add 10.0.20.10/24 dev veth20
-  run ip netns exec ptf20 ip link set veth20 address 02:03:04:05:06:20
-  run ip netns exec ptf20 ip link set dev veth20 up
-  run ip netns exec ptf20 ip route add default via 10.0.20.1
+  run ip netns exec ptf0 ip link set dev lo up
+  run ip netns exec ptf0 ethtool --offload veth20 rx off tx off
+  run ip netns exec ptf0 ip addr add 10.0.20.10/24 dev veth20
+  run ip netns exec ptf0 ip link set veth20 address 02:03:04:05:06:20
+  run ip netns exec ptf0 ip link set dev veth20 up
 
   run ethtool --offload veth11 rx off tx off
   run ip addr add 10.0.10.1/24 dev veth11
@@ -55,9 +52,8 @@ create_network () {
 destroy_network () {
   echo "destroy_network"
 
-  run ip netns del ptf10
-  run ip netns del ptf20
-  # delete veth?
+  run ip netns del ptf0
+  # veth are auto deleted
 }
 
 while getopts "cd" ARGS;
@@ -72,17 +68,17 @@ done
 
 echo "Usage: $0 -{c|d} (c: create, d:delete)"
 cat << EOF
-IPv4 and MAC address is statically configured for each netns.
+IPv4 and MAC address is statically configured.
 
-  +----------+ +----------+
-  |  ptf10   | |  ptf20   |
-  |          | |          |
-  | (veth10) | | (veth20) |
-  +-----|----+ +-----|----+
-        |            |
-    (veth11)     (veth21)
+  +-------------------+
+  |       ptf0        |
+  |                   |
+  | (veth10) (veth20) |
+  +-----|--------|----+
+        |        |
+    (veth11) (veth21)
   
-    host (netns: default)
+  host (netns: default)
   
 - veth10: 10.0.10.10/24 (02:03:04:05:06:10)
 - veth20: 10.0.20.10/24 (02:03:04:05:06:20)
