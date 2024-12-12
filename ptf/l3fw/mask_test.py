@@ -11,10 +11,6 @@ class MaskTest(base_test.DutTest):
     def runTest(self):
         print("Running:", self.__class__.__name__)
 
-        # $PTF --test-dir ./ --interface 0@veth11 --interface 1@veth21
-        port1 = 0
-        port2 = 1
-        
         mac_veth10 = "02:03:04:05:06:10"
         mac_veth11 = "02:03:04:05:06:11"
         mac_veth20 = "02:03:04:05:06:20"
