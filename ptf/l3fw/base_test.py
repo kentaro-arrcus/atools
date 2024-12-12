@@ -5,7 +5,6 @@ Create test importing this class for each test items.
 
 import ptf
 from ptf.base_tests import BaseTest
-from ptf import config
 import ptf.testutils as testutils
 
 # TODO: Add class to connect to and configure DUT(switch)

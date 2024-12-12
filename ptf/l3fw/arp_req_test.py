@@ -1,11 +1,9 @@
 """
-Base classes for test cases.
-Create test importing this class for each test items.
+Send Arp Request and confirm correct Reply is received.
 """
 import ptf
-#import ptf.testutils as testutils
 from ptf.testutils import *
-import ptf.packet as packet
+import ptf.packet as packet #scapy
 
 import base_test
 
