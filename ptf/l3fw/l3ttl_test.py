@@ -7,9 +7,7 @@ import ptf.packet as p #scapy
 
 import base_test
 
-# TODO: Add class to connect to and configure DUT(switch)
-
-class L3Ipv4(base_test.DutTest):
+class L3TtlExpired(base_test.DutTest):
     def runTest(self):
         print("Running:", self.__class__.__name__)
 
@@ -28,7 +26,6 @@ class L3Ipv4(base_test.DutTest):
         )
         pkt1 /= p.IP(
             ttl = 1,
-            proto = 0,
             src = ipv4_veth11,
             dst = ipv4_veth21,
         )
@@ -38,12 +35,7 @@ class L3Ipv4(base_test.DutTest):
             dst = mac_veth11,
         )
         pkt2 /= p.IP(
-            ihl = 5,
-            tos = 192,
-            len = 48,
-            #id = 9140, #ignore
             ttl = 64,
-            #chksum = xx, #ignore
             src = ipv4_veth10,
             dst = ipv4_veth11,
         )
@@ -51,18 +43,10 @@ class L3Ipv4(base_test.DutTest):
             type = 11, #Time Exceeded
             #chksum = 62719, #ignore
         )
-        pkt2 /= p.IP(
-            ihl = 5,
-            tos = 0,
-            len = 20,
-            #id = 1,
-            ttl = 1,
-            proto = 0,
-            #chksum = 34792, #ignore
-            src = ipv4_veth11,
-            dst = ipv4_veth21,
-        )
+        pkt2 /= pkt1.payload
+
         m = ptf.mask.Mask(pkt2)
+        m.set_do_not_care_scapy(IP, 'tos')
         m.set_do_not_care_scapy(IP, 'id')
         m.set_do_not_care_scapy(IP, 'chksum')
 
